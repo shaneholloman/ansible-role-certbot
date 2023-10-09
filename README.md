@@ -1,8 +1,8 @@
 # Ansible Role: Certbot (for Let's Encrypt)
 
-[![CI](https://github.com/shaneholloman-org/ansible-role-certbot/actions/workflows/ci.yml/badge.svg)](https://github.com/shaneholloman-org/ansible-role-certbot/actions/workflows/ci.yml)
+[![CI](https://github.com/shaneholloman/ansible-role-certbot/actions/workflows/ci.yml/badge.svg)](https://github.com/shaneholloman/ansible-role-certbot/actions/workflows/ci.yml)
 
-Installs and configures Certbot (for Let's Encrypt).
+Installs and configures Certbot (for Let's Encrypt)
 
 ## Requirements
 
@@ -32,7 +32,7 @@ Currently the `standalone` and `webroot` method are supported for generating new
 
     certbot_create_if_missing: false
 
-Set `certbot_create_if_missing` to `yes` or `True` to let this role generate certs. 
+Set `certbot_create_if_missing` to `yes` or `True` to let this role generate certs.
 
     certbot_create_method: standalone
 
@@ -163,5 +163,3 @@ MIT / BSD
 ## Author Information
 
 This role was created in 2023
-
-
