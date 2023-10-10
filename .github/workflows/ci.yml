@@ -63,6 +63,9 @@ jobs:
       - name: Install test dependencies.
         run: pip3 install ansible molecule molecule-plugins[docker] docker
 
+      - name: Uninstall molecule-docker.
+        run: pip3 uninstall molecule-docker -y
+
       - name: Run Molecule tests.
         run: molecule test
         continue-on-error: ${{ matrix.experimental }}
