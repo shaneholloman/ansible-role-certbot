@@ -42,7 +42,7 @@ jobs:
     strategy:
       matrix:
         include:
-          - distro: rocky9
+          - distro: rockylinux9
             playbook: converge.yml
             experimental: false
           - distro: ubuntu2204
