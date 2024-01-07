@@ -8,12 +8,12 @@
 
   pre_tasks:
     - name: Update apt cache.
-      apt: update_cache=yes cache_valid_time=600
+      ansible.builtin.apt: update_cache=yes cache_valid_time=600
       when: ansible_os_family == 'Debian'
       changed_when: false
 
     - name: Install dependencies (RedHat).
-      yum:
+      ansible.builtin.yum:
         name:
           - cronie
           - epel-release
@@ -21,7 +21,7 @@
       when: ansible_os_family == 'RedHat'
 
     - name: Install cron (Debian).
-      apt: name=cron state=present
+      ansible.builtin.apt: name=cron state=present
       when: ansible_os_family == 'Debian'
 
   roles:

@@ -64,7 +64,7 @@
     - name: Add A record for the new EC2 instance IP in Route53.
       route53:
         profile: mm
-        command: create
+        ansible.builtin.command: create
         zone: servercheck.in
         record: certbot-test.servercheck.in
         type: A
@@ -99,7 +99,7 @@
         root: "/usr/share/nginx/html"
         index: "index.html index.htm"
         state: "present"
-        template: "{{ nginx_vhost_template }}"
+        ansible.builtin.template: "{{ nginx_vhost_template }}"
         filename: "certbot_test.conf"
         extra_parameters: |
           ssl_certificate     /etc/letsencrypt/live/certbot-test.servercheck.in/fullchain.pem;
@@ -109,19 +109,19 @@
 
   pre_tasks:
     - name: Update apt cache.
-      apt: update_cache=true cache_valid_time=600
+      ansible.builtin.apt: update_cache=true cache_valid_time=600
       when: ansible_os_family == 'Debian'
       changed_when: false
 
     - name: Install dependencies (RedHat).
-      yum: name={{ item }} state=present
+      ansible.builtin.yum: name={{ item }} state=present
       when: ansible_os_family == 'RedHat'
       with_items:
         - cronie
         - epel-release
 
     - name: Install cron (Debian).
-      apt: name=cron state=present
+      ansible.builtin.apt: name=cron state=present
       when: ansible_os_family == 'Debian'
 
   roles:
@@ -130,7 +130,7 @@
 
   tasks:
     - name: Flush handlers in case any configs have changed.
-      meta: flush_handlers
+      ansible.builtin.meta: flush_handlers
 
     - name: Test secure connection to SSL domain.
       uri:

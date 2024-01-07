@@ -1,7 +1,7 @@
 ---
 - import_tasks: include-vars.yml
 
-- import_tasks: setup-RedHat.yml
+- import_tasks: setup-redhat.yml
   when: ansible_os_family == 'RedHat'
 
 - import_tasks: install-with-package.yml
@@ -13,7 +13,7 @@
 - import_tasks: install-from-source.yml
   when: certbot_install_method == 'source'
 
-- include_tasks: create-cert-standalone.yml
+- ansible.builtin.include_tasks: create-cert-standalone.yml
   with_items: "{{ certbot_certs }}"
   when:
     - certbot_create_if_missing
@@ -21,7 +21,7 @@
   loop_control:
     loop_var: cert_item
 
-- include_tasks: create-cert-webroot.yml
+- ansible.builtin.include_tasks: create-cert-webroot.yml
   with_items: "{{ certbot_certs }}"
   when:
     - certbot_create_if_missing
