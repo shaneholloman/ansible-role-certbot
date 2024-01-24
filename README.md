@@ -1,4 +1,4 @@
-# Ansible Role: Certbot (for Let's Encrypt)
+# Ansible Role: `certbot`
 
 [![CI](https://github.com/shaneholloman/ansible-role-certbot/actions/workflows/ci.yml/badge.svg)](https://github.com/shaneholloman/ansible-role-certbot/actions/workflows/ci.yml)
 
@@ -12,15 +12,19 @@ Generally, installing from source (see section `Source Installation from Git`) l
 
 ## Role Variables
 
-    certbot_install_method: package
+```yml
+certbot_install_method: package
+```
 
 Controls how Certbot is installed. Available options are 'package', 'snap', and 'source'.
 
-    certbot_auto_renew: true
-    certbot_auto_renew_user: "{{ ansible_user | default(lookup('env', 'USER')) }}"
-    certbot_auto_renew_hour: "3"
-    certbot_auto_renew_minute: "30"
-    certbot_auto_renew_options: "--quiet"
+```yml
+certbot_auto_renew: true
+certbot_auto_renew_user: "{{ ansible_user | default(lookup('env', 'USER')) }}"
+certbot_auto_renew_hour: "3"
+certbot_auto_renew_minute: "30"
+certbot_auto_renew_options: "--quiet"
+```
 
 By default, this role configures a cron job to run under the provided user account at the given hour and minute, every day. The defaults run `certbot renew` (or `certbot-auto renew`) via cron every day at 03:30:00 by the user you use in your Ansible playbook. It's preferred that you set a custom user/hour/minute so the renewal is during a low-traffic period and done by a non-root user account.
 
@@ -30,19 +34,27 @@ Currently the `standalone` and `webroot` method are supported for generating new
 
 **For a complete example**: see the fully functional test playbook in [molecule/default/playbook-standalone-nginx-aws.yml](molecule/default/playbook-standalone-nginx-aws.yml).
 
-    certbot_create_if_missing: false
+```yml
+certbot_create_if_missing: false
+```
 
 Set `certbot_create_if_missing` to `yes` or `True` to let this role generate certs.
 
-    certbot_create_method: standalone
+```yml
+certbot_create_method: standalone
+```
 
 Set the method used for generating certs with the `certbot_create_method` variable — current allowed values are: `standalone` or `webroot`.
 
-    certbot_testmode: false
+```yml
+certbot_testmode: false
+```
 
 Enable test mode to only run a test request without actually creating certificates.
 
-    certbot_hsts: false
+```yml
+certbot_hsts: false
+```
 
 Enable (HTTP Strict Transport Security) for the certificate generation.
 
@@ -50,25 +62,31 @@ Enable (HTTP Strict Transport Security) for the certificate generation.
 
 The email address used to agree to Let's Encrypt's TOS and subscribe to cert-related notifications. This should be customized and set to an email address that you or your organization regularly monitors.
 
-    certbot_certs: []
-      # - email: janedoe@example.com
-      #   webroot: "/var/www/html"
-      #   domains:
-      #     - example1.com
-      #     - example2.com
-      # - domains:
-      #     - example3.com
+```yml
+certbot_certs: []
+    # - email: janedoe@example.com
+    #   webroot: "/var/www/html"
+    #   domains:
+    #     - example1.com
+    #     - example2.com
+    # - domains:
+    #     - example3.com
+```
 
 A list of domains (and other data) for which certs should be generated. You can add an `email` key to any list item to override the `certbot_admin_email`. When using the `webroot` creation method, a `webroot` item has to be provided, specifying which directory to use for the authentication. Make sure your webserver correctly delivers contents from this directory.
 
-    certbot_create_command: "{{ certbot_script }} certonly --standalone --noninteractive --agree-tos --email {{ cert_item.email | default(certbot_admin_email) }} -d {{ cert_item.domains | join(',') }}"
+```yml
+certbot_create_command: "{{ certbot_script }} certonly --standalone --noninteractive --agree-tos --email {{ cert_item.email | default(certbot_admin_email) }} -d {{ cert_item.domains | join(',') }}"
+```
 
 The `certbot_create_command` defines the command used to generate the cert.
 
 #### Standalone Certificate Generation
 
-    certbot_create_standalone_stop_services:
-      - nginx
+```yml
+certbot_create_standalone_stop_services:
+    - nginx
+```
 
 Services that should be stopped while `certbot` runs it's own standalone server on ports 80 and 443. If you're running Apache, set this to `apache2` (Ubuntu), or `httpd` (RHEL), or if you have Nginx on port 443 and something else on port 80 (e.g. Varnish, a Java app, or something else), add it to the list so it is stopped when the certificate is generated.
 
@@ -90,13 +108,17 @@ When using the `webroot` creation method, a `webroot` item has to be provided fo
 
 You can install Certbot from it's Git source repository if desired with `certbot_install_method: source`. This might be useful in several cases, but especially when older distributions don't have Certbot packages available (e.g. CentOS < 7, Ubuntu < 16.10 and Debian < 8).
 
-    certbot_repo: https://github.com/certbot/certbot.git
-    certbot_version: master
-    certbot_keep_updated: true
+```yml
+certbot_repo: https://github.com/certbot/certbot.git
+certbot_version: master
+certbot_keep_updated: true
+```
 
 Certbot Git repository options. If installing from source, the configured `certbot_repo` is cloned, respecting the `certbot_version` setting. If `certbot_keep_updated` is set to `yes`, the repository is updated every time this role runs.
 
-    certbot_dir: /opt/certbot
+```yml
+certbot_dir: /opt/certbot
+```
 
 The directory inside which Certbot will be cloned.
 
@@ -112,15 +134,17 @@ None.
 
 ## Example Playbook
 
-    - hosts: servers
+```yml
+- hosts: servers
 
-      vars:
-        certbot_auto_renew_user: your_username_here
-        certbot_auto_renew_minute: "20"
-        certbot_auto_renew_hour: "5"
+  vars:
+      certbot_auto_renew_user: your_username_here
+      certbot_auto_renew_minute: "20"
+      certbot_auto_renew_hour: "5"
 
-      roles:
-        - shaneholloman.certbot
+  roles:
+      - shaneholloman.certbot
+```
 
 See other examples in the `tests/` directory.
 
@@ -130,11 +154,15 @@ _Note: You can have this role automatically generate certificates; see the "Auto
 
 You can manually create certificates using the `certbot` (or `certbot-auto`) script (use `letsencrypt` on Ubuntu 16.04, or use `/opt/certbot/certbot-auto` if installing from source/Git. Here are some example commands to configure certificates with Certbot:
 
-    # Automatically add certs for all Apache virtualhosts (use with caution!).
-    certbot --apache
+```yml
+# Automatically add certs for all Apache virtualhosts (use with caution!).
+certbot --apache
+```
 
-    # Generate certs, but don't modify Apache configuration (safer).
-    certbot --apache certonly
+```yml
+# Generate certs, but don't modify Apache configuration (safer).
+certbot --apache certonly
+```
 
 If you want to fully automate the process of adding a new certificate, but don't want to use this role's built in functionality, you can do so using the command line options to register, accept the terms of service, and then generate a cert using the standalone server:
 
@@ -152,13 +180,15 @@ By default, this role adds a cron job that will renew all installed certificates
 
 You can test the auto-renewal (without actually renewing the cert) with the command:
 
-    /opt/certbot/certbot-auto renew --dry-run
+```yml
+/opt/certbot/certbot-auto renew --dry-run
+```
 
 See full documentation and options on the [Certbot website](https://certbot.eff.org/).
 
 ## License
 
-MIT / BSD
+Unlicense
 
 ## Author Information
 
