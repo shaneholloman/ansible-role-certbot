@@ -7,14 +7,13 @@ name: CI
     branches:
       - main
   schedule:
-    - cron: "30 2 * * 0"
+    - cron: '30 2 * * 0'
 
 defaults:
   run:
     working-directory: 'shaneholloman.certbot'
 
 jobs:
-
   lint:
     name: Lint
     runs-on: ubuntu-latest
